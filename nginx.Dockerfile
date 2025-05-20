@@ -9,7 +9,7 @@ RUN mkdir -p /tmp/nginx-logs/ && \
 COPY --chown=nginx:nginx ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --chown=nginx:nginx ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-COPY --chown=nginx:nginx ./nginx/nginx-entrypoint.sh /nginx-entrypoint.sh/
+COPY --chown=nginx:nginx ./nginx/nginx-entrypoint.sh /nginx-entrypoint.sh
 COPY --chown=nginx:nginx ./docs/other_files/chemiloco /usr/local/bin/chemiloco
 
 RUN chmod +x /nginx-entrypoint.sh && \
