@@ -9,24 +9,21 @@ services:
       dockerfile: nginx.Dockerfile
     ports:
       - "8080:80"
+    restart: unless-stopped
     volumes:
-      # remember: local-path:docker-path: read and write
-      - ./nginx:/etc/nginx/conf.d:rw
+      # remember: local-path:docker-path: read only to avoid corrupted data
+      - ./nginx:/etc/nginx/conf.d:ro
       - wordpress:/var/www/html
-      - ./docs/other_files/nginx-entrypoint.sh:/nginx-entrypoint.sh:ro    
-      - ./nginx-logs:/var/log/nginx  
-      - ./nginx:/etc/nginx/conf.d
-      - ./logs:/tmp/nginx-logs 
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf 
+      
     # runs this script to check memory usage
-    entrypoint: ["sh", "/nginx-entrypoint.sh"]
+    entrypoint: ["/nginx-entrypoint.sh"]
     networks:
       - internal
     depends_on:
       - wordpress
     extra_hosts:
       - "wordpress:172.18.0.2"
-    restart: unless-stopped
+    
     
     
   
@@ -84,12 +81,13 @@ services:
       - wordpress:/var/www/html
       - ./docs/other_files/wp1-entrypoint.sh:/wp1-entrypoint.sh:ro
       - ./docs/other_files/chemiloco:/var/spool/cron/crontabs/chemiloco:ro
+      - ./docs/other_files/memory_protect.sh:/var/www/html/memory_protect.sh:rw
     environment:
       WORDPRESS_DB_HOST: database:3306
       WORDPRESS_DB_NAME: ${DATABASE_NAME}
       WORDPRESS_DB_USER: ${DATABASE_USER}
       WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
-    entrypoint: ["sh", "/wp1-entrypoint.sh"]
+    entrypoint: ["sh", "/wp1-entrypoint.sh", "/memory_protect.sh"]
     
     networks:
       - internal
