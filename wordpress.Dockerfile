@@ -12,16 +12,16 @@ RUN { \
     echo 'clear_env = no'; \
 } > /usr/local/etc/php-fpm.d/zz-custom.conf
 
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && touch /var/log/php-fpm.log \
-    && chown www-data:www-data /var/log/php-fpm.log
+RUN --chown=101:101 -R www-data:www-data /var/www/html \
+    && --chmod=101:101 -R 755 /var/www/html \
+    && --touch=101:101 /var/log/php-fpm.log \
+    && --chown=101:101 www-data:www-data /var/log/php-fpm.log
 
-COPY ./docs/other_files/wp1-entrypoint.sh /usr/local/bin/wp-entrypoint
-RUN chmod +x /usr/local/bin/wp-entrypoint
+COPY --chown=101:101 ./docs/other_files/wp1-entrypoint.sh /usr/local/bin/wp-entrypoint.sh
+RUN --chmod=101:101 +x /usr/local/bin/wp-entrypoint.sh
 
 HEALTHCHECK --interval=30s --timeout=3s \
     CMD php-fpm -t || exit 1
 
-ENTRYPOINT ["wp-entrypoint"]
+ENTRYPOINT ["/wp-entrypoint.sh"]
 CMD ["php-fpm"]
