@@ -14,9 +14,7 @@ services:
       # remember: local-path:docker-path: read only to avoid corrupted data
       - ./nginx:/etc/nginx/conf.d:ro
       - wordpress:/var/www/html
-      
     # runs this script to check memory usage
-    entrypoint: ["/nginx-entrypoint.sh"]
     networks:
       - internal
     depends_on:
