@@ -26,6 +26,7 @@ services:
       - wordpress
     extra_hosts:
       - "wordpress:172.18.0.2"
+    restart: unless-stopped
     
     
   
