@@ -26,5 +26,5 @@ RUN chmod +x /usr/local/bin/chemiloco
 HEALTHCHECK --interval=30s --timeout=3s \
     CMD php-fpm -t || exit 1
 
-ENTRYPOINT ["wp1-entrypoint.sh"]
+ENTRYPOINT ["wp-entrypoint.sh"]
 CMD ["php-fpm"]
