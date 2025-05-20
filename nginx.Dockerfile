@@ -1,20 +1,28 @@
 FROM nginxinc/nginx-unprivileged:latest
 
-RUN mkdir -p /tmp/nginx-logs && \
-    touch /tmp/nginx-logs/{access,error}.log && \
-    chmod -R 755 /tmp/nginx-logs
+# Création des fichiers de logs avec les bonnes permissions
+RUN mkdir -p /var/log/nginx && \
+    touch /var/log/nginx/{access,error}.log && \
+    chown -R nginx:nginx /var/log/nginx && \
+    chmod -R 755 /var/log/nginx
 
-COPY --chown=101:101 ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --chown=101:101 ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --chown=101:101 ./nginx/nginx-entrypoint.sh /nginx-entrypoint.sh
-# script that checks if memory > 70%
-#COPY --chown=101:101 ./docs/other_files/chemiloco /#chemiloco
+# Copie des fichiers de configuration
+COPY --chown=nginx:nginx ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginx:nginx ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-RUN chmod +x /nginx-entrypoint.sh && \
+# Copie des scripts
+COPY --chown=nginx:nginx ./nginx/nginx-entrypoint.sh /docker-entrypoint.d/nginx-entrypoint.sh
+COPY --chown=nginx:nginx ./docs/other_files/chemiloco /usr/local/bin/chemiloco
+
+# Vérification de la configuration et permissions
+RUN chmod +x /docker-entrypoint.d/nginx-entrypoint.sh && \
+    chmod +x /usr/local/bin/chemiloco && \
     nginx -t
 
-#RUN chmod +x /chemiloco && \
-#    nginx -t
+USER nginx
 
-ENTRYPOINT ["/nginx-entrypoint.sh"]
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost/ || exit 1
+
+ENTRYPOINT ["/docker-entrypoint.d/nginx-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
