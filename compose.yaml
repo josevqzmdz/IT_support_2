@@ -9,7 +9,7 @@ services:
       dockerfile: nginx.Dockerfile
     ports:
       - "8080:80"
-    restart: unless-stopped
+    restart: on-failure:3
     volumes:
       # remember: local-path:docker-path: read only to avoid corrupted data
       - ./nginx:/etc/nginx/conf.d:ro
@@ -20,13 +20,13 @@ services:
     depends_on:
       wordpress:
         condition: service_healthy
-    extra_hosts:
-      - "wordpress:172.18.0.2"
+    
     healthcheck:
-      test: service nginx status || exit 1
+      test: curl -f http://localhost:8080 || exit 1
       interval: 15s
       timeout: 3s
       retries: 2
+
     
     
     

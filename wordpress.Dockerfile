@@ -3,7 +3,7 @@ FROM wordpress:php8.2-fpm-alpine
 RUN { \
     echo '[www]'; \
     echo 'listen = 9000'; \
-    echo 'listen.allowed_clients = 127.0.0.1'; \
+    echo 'listen.allowed_clients = 0.0.0.0'; \
     echo 'pm = dynamic'; \
     echo 'pm.max_children = 20'; \
     echo 'pm.start_servers = 5'; \
