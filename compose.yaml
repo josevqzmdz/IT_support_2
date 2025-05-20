@@ -12,7 +12,7 @@ services:
     restart: on-failure:3
     volumes:
       # remember: local-path:docker-path: read only to avoid corrupted data
-      - ./nginx:/etc/nginx/conf.d:ro
+      - ./nginx:/etc/nginx/conf.d:rw
       - wordpress:/var/www/html
     # runs this script to check memory usage
     networks:
