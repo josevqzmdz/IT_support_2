@@ -6,11 +6,12 @@ RUN mkdir -p /tmp/nginx-logs/ && \
     chown -R nginx:nginx /var/log/nginx && \
     chmod -R 755 /tmp/nginx-logs/
 
-COPY --chown=nginx:nginx ./nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --chown=nginx:nginx ./nginx/default.conf /etc/nginx/conf.d/default.conf
+USER root
+COPY --chown=101:101 ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=101:101 ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
-COPY --chown=nginx:nginx ./nginx/nginx-entrypoint.sh /nginx-entrypoint.sh
-COPY --chown=nginx:nginx ./docs/other_files/chemiloco /usr/local/bin/chemiloco
+COPY --chown=101:101 ./nginx/nginx-entrypoint.sh /nginx-entrypoint.sh
+COPY --chown=101:101 ./docs/other_files/chemiloco /usr/local/bin/chemiloco
 
 RUN chmod +x /nginx-entrypoint.sh && \
     chmod +x /usr/local/bin/chemiloco && \
