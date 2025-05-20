@@ -24,5 +24,8 @@ RUN --chmod=101:101 +x /usr/local/bin/wp-entrypoint.sh
 HEALTHCHECK --interval=30s --timeout=3s \
     CMD php-fpm -t || exit 1
 
+# disallows root privileges
+USER tomcat
+
 ENTRYPOINT ["/wp-entrypoint.sh"]
 CMD ["php-fpm"]
