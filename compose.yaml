@@ -93,13 +93,6 @@ services:
     
     networks:
       - internal
-  php:
-    image: php:fpm-alpine
-    networks:
-      - nginx:php-net
-    volumes:
-      - ./html/:/var/www/html/
-      - ./logs/php.log:/var/log/fpm-php.www.log
 
 volumes:
   dbdata:
