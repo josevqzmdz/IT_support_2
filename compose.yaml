@@ -77,7 +77,8 @@ services:
       context: .
       dockerfile: nginx.Dockerfile
     depends_on:
-      - database   
+      - database
+      - php   
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     volumes:
@@ -93,6 +94,13 @@ services:
     
     networks:
       - internal
+  php:
+    image: php:fpm-alpine
+    networks:
+      - nginx:php-net
+    volumes:
+      - ./html/:/var/www/html/
+      - ./logs/php.log:/var/log/fpm-php.www.log
 
 volumes:
   dbdata:
@@ -102,3 +110,5 @@ networks:
   internal:
     driver: bridge
     attachable: true
+  nginx:php-net:
+    driver: bridge
