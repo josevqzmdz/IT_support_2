@@ -18,12 +18,12 @@ services:
     networks:
       - internal
     depends_on:
-      wordpress:
-        condition: service_healthy
+      - wordpress
+        #condition: service_healthy
   
   # database section
   database:
-    container_name: ${CONTAINER_NAME}-database
+    container_name: database
     image: mysql:latest
     env_file: .env
     environment:
@@ -35,7 +35,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-    - dbdata:/var/lib/mysql
+    - database:/var/lib/mysql
     networks:
       - internal
     healthcheck:
@@ -77,36 +77,38 @@ services:
       context: .
       dockerfile: wordpress.Dockerfile
     depends_on:
-      database:
-        condition: service_healthy
+      - database
+        # condition: service_healthy
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     volumes:
       - wordpress:/var/www/html
       
     environment:
-      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_HOST: database
       WORDPRESS_DB_NAME: ${DATABASE_NAME}
       WORDPRESS_DB_USER: ${DATABASE_USER}
       WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
     
     networks:
-      internal:
-        ipv4_address: ${WORDPRESS_IP}
-    healthcheck:
-      test: ["CMD-SHELL", "curl", "-f", "http://localhost/status || exit 1"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
+      - internal
+      #  ipv4_address: 172.18.0.50
+      # healthcheck:
+      # test: ["CMD-SHELL", "curl", "-f", "http://localhost/status || exit 1"]
+      # interval: 30s
+      # timeout: 3s
+      # retries: 3
 
 volumes:
-  dbdata:
+  database:
+    driver: local
   wordpress:
+    driver: local
 
 networks:
   internal:
     driver: bridge
     attachable: true
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16 
+    # ipam:
+    #  config:
+    #    - subnet: 172.18.0.0/16 
