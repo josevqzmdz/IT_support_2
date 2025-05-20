@@ -38,6 +38,20 @@ services:
     - dbdata:/var/lib/mysql
     networks:
       - internal
+    healthcheck:
+      test: >
+        bash -c '
+        mysqladmin ping -h localhost -u root -p"$${MYSQL_ROOT_PASSWORD}" 2>/dev/null | grep -q "mysqld is alive"
+        || exit 1'
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    command: 
+      - --bind-address=0.0.0.0
+      - --skip-name-resolve
+      - --max_connections=200
+      - --wait_timeout=300
     
   # phpmyadmin section
   phpmyadmin:
@@ -63,7 +77,8 @@ services:
       context: .
       dockerfile: wordpress.Dockerfile
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     volumes:
@@ -77,9 +92,9 @@ services:
     
     networks:
       internal:
-        ipv4_address: 172.18.0.50
+        ipv4_address: ${WORDPRESS_IP}
     healthcheck:
-      test: ["CMD-SHELL", "curl", "-f", "http://localhost:9000/ping || exit 1"]
+      test: ["CMD-SHELL", "curl", "-f", "http://nginx/ || exit 1"]
       interval: 30s
       timeout: 3s
       retries: 3

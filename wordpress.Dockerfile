@@ -23,8 +23,9 @@ RUN chmod +x /usr/local/bin/wp-entrypoint.sh
 COPY --chown=www-data:www-data ./docs/other_files/chemiloco /usr/local/bin/chemiloco
 RUN chmod +x /usr/local/bin/chemiloco
 
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD php-fpm -t || exit 1
+RUN echo 'pm.status_path = /status' >> /usr/local/etc/php-fpm.d/zz-custom.conf
+
+HEALTHCHECK CMD curl -f http://localhost/status || exit 1
 
 ENTRYPOINT ["wp-entrypoint.sh"]
 CMD ["php-fpm"]
