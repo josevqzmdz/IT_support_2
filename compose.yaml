@@ -68,17 +68,20 @@ services:
     container_name: ${CONTAINER_NAME}-wordpress
     volumes:
       - wordpress:/var/www/html
-      - ./docs/other_files/wp1-entrypoint.sh:/wp1-entrypoint.sh:ro
       
     environment:
       WORDPRESS_DB_HOST: database:3306
       WORDPRESS_DB_NAME: ${DATABASE_NAME}
       WORDPRESS_DB_USER: ${DATABASE_USER}
       WORDPRESS_DB_PASSWORD: ${DATABASE_PASSWORD}
-    entrypoint: ["sh", "/wp1-entrypoint.sh"]
     
     networks:
       - internal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/status"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
 
 volumes:
   dbdata:
