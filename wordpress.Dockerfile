@@ -1,5 +1,6 @@
 FROM wordpress:php8.2-fpm-alpine
 
+USER root
 RUN { \
     echo '[www]'; \
     echo 'listen = 9000'; \
@@ -10,9 +11,9 @@ RUN { \
     echo 'pm.min_spare_servers = 2'; \
     echo 'pm.max_spare_servers = 8'; \
     echo 'clear_env = no'; \
+    echo 'pm.status_path = /status'; \
 } > /usr/local/etc/php-fpm.d/zz-custom.conf
 
-USER www-data
 RUN mkdir -p /var/www/html/wp-content/uploads && \
     chmod -R 775 /var/www/html/wp-content/uploads
 
@@ -25,7 +26,10 @@ RUN chmod +x /usr/local/bin/chemiloco
 
 RUN echo 'pm.status_path = /status' >> /usr/local/etc/php-fpm.d/zz-custom.conf
 
-HEALTHCHECK CMD curl -f http://localhost/status || exit 1
+USER www-data
+
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost/status || exit 1
 
 ENTRYPOINT ["wp-entrypoint.sh"]
 CMD ["php-fpm"]
