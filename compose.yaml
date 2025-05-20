@@ -79,7 +79,7 @@ services:
       internal:
         ipv4_address: 172.18.0.50
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/status"]
+      test: ["CMD-SHELL", "curl", "-f", "http://localhost:9000/ping || exit 1"]
       interval: 30s
       timeout: 3s
       retries: 3
