@@ -27,5 +27,9 @@ RUN chmod +x /nginx-entrypoint.sh && \
 
 USER nginx
 
+
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost/ || exit 1
+
 ENTRYPOINT ["/nginx-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
