@@ -20,7 +20,7 @@ COPY --chown=www-data:www-data ./docs/other_files/wp1-entrypoint.sh /usr/local/b
 RUN chmod +x /usr/local/bin/wp-entrypoint.sh
 
 # script that checks if memor > 70
-COPY --chown=101:101 ./docs/other_files/chemiloco /usr/local/bin/chemiloco
+COPY --chown=www-data:www-data ./docs/other_files/chemiloco /usr/local/bin/chemiloco
 RUN chmod +x /usr/local/bin/chemiloco
 
 HEALTHCHECK --interval=30s --timeout=3s \
