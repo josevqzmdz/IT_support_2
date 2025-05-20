@@ -1,3 +1,4 @@
+user  nginx;
 worker_processes  auto;
 
 error_log  /tmp/nginx-logs/error.log notice;
