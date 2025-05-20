@@ -1,14 +1,14 @@
 FROM nginxinc/nginx-unprivileged:latest
 
 USER root
-RUN mkdir -p /tmp/nginx-logs/ && \
+RUN mkdir -p /tmp/nginx-logs && \
     touch /tmp/nginx-logs/access.log /tmp/nginx-logs/error.log && \
-    chown -R nginx:nginx /var/log/nginx && \
-    chmod -R 777 /tmp/nginx-logs/ && \
-    touch /tmp/nginx.pid/ && \
-    chmod 777 /tmp/nginx.pid/ && \
-    chown -R nginx:nginx /tmp/nginx.pid /etc/nginx /var/www /usr/local/etc/php-fpm*/ && \
-    ls -la /tmp/nginx.pid
+    mkdir -p /tmp/nginx && \
+    touch /tmp/nginx-logs/nginx.pid && \
+    chown -R nginx:nginx /tmp/nginx-logs /tmp/nginx-logs && \
+    chmod -R 777 /tmp/nginx-logs /tmp/nginx-logs && \
+    chown -R nginx:nginx /tmp/nginx-logs/ /tmp/nginx-logs/ && \
+    ls -la /tmp/nginx-logs/
 
 USER root
 COPY --chown=nginx:nginx ./nginx/nginx.conf /etc/nginx/nginx.conf
