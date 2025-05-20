@@ -75,10 +75,9 @@ services:
   wordpress:
     build:
       context: .
-      dockerfile: nginx.Dockerfile
+      dockerfile: wordpress.Dockerfile
     depends_on:
       - database
-      - php   
     env_file: .env
     container_name: ${CONTAINER_NAME}-wordpress
     volumes:
@@ -110,5 +109,3 @@ networks:
   internal:
     driver: bridge
     attachable: true
-  nginx:php-net:
-    driver: bridge
