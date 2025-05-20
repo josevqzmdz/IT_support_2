@@ -1,5 +1,4 @@
 # wordpress server using mysql running nginx as reverse proxy
-
 services:
   #nginx section
   nginx:
@@ -26,7 +25,7 @@ services:
     depends_on:
       - wordpress
     extra_hosts:
-      - "wordpress:${WORDPRESS_IP:-wordpress}"
+      - "wordpress:172.18.0.2"
     
     
   
